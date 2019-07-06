@@ -33,7 +33,8 @@ static int g_texnum = 3;
 
 //Mugsy - upped the maximum texture size to 512. All changes are the replacement of '256'
 //with this define, MAX_TEXTURE_DIMS
-#define MAX_TEXTURE_DIMS 512	
+//#define MAX_TEXTURE_DIMS 512
+#define MAX_TEXTURE_DIMS 2048
 
 void StudioModel::UploadTexture(mstudiotexture_t *ptexture, byte *data, byte *pal, int name)
 {
