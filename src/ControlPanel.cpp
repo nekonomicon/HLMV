@@ -816,7 +816,6 @@ ControlPanel::dumpModelInfo ()
 				mstudioseqgroup_t *pseqgroups = (mstudioseqgroup_t *) (phdr + hdr->seqgroupindex);
 				fprintf (file, "\nseqgroup %d.label: \"%s\"\n", i + 1, pseqgroups[i].label);
 				fprintf (file, "\nseqgroup %d.namel: \"%s\"\n", i + 1, pseqgroups[i].name);
-				fprintf (file, "\nseqgroup %d.data: %d\n", i + 1, pseqgroups[i].data);
 			}
 
 			hdr = g_studioModel.getTextureHeader ();
