@@ -107,9 +107,9 @@ extern ViewerSettings g_viewerSettings;
 extern "C" {
 #endif
 
-void InitViewerSettings (void);
-int LoadViewerSettings (const char *filename);
-int SaveViewerSettings (const char *filename);
+void InitViewerSettings ();
+int LoadViewerSettings ();
+int SaveViewerSettings ();
 
 #ifdef __cplusplus
 }

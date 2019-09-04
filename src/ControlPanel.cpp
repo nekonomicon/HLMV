@@ -26,7 +26,6 @@
 #include <mx/mxBmp.h>
 #include <mx/mxShellExec.h>
 
-
 extern const char *g_appTitle;
 
 
@@ -43,7 +42,7 @@ static int g_nCurrFrame;
 ControlPanel::ControlPanel (mxWindow *parent)
 : mxWindow (parent, 0, 0, 0, 0, "Control Panel", mxWindow::Normal)
 {
-	InitViewerSettings ();
+	LoadViewerSettings ();
 
 	// create tabcontrol with subdialog windows
 	tab = new mxTab (this, 0, 0, 0, 0, IDC_TAB);
@@ -1428,7 +1427,7 @@ ControlPanel::fullscreen ()
 	g_viewerSettings.cds = true;
 	//g_viewerSettings.use3dfx = cb3dfxOpenGL->isChecked ();
 
-	if (SaveViewerSettings ("hlmv.cfg"))
+	if (SaveViewerSettings ())
 	{
 		g_viewerSettings.pause = true;
 		g_viewerSettings.use3dfx = false;

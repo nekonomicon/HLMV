@@ -22,6 +22,7 @@
 #include <mx/gl.h>
 #include <mx/mxTga.h>
 #include <mx/mxShellExec.h>
+#include <mx/mxSettings.h>
 #include "mdlviewer.h"
 #include "GlWindow.h"
 #include "ControlPanel.h"
@@ -33,6 +34,7 @@
 
 
 MDLViewer *g_MDLViewer;
+static const char *g_org = "Flying With Gauss";
 const char *g_appTitle = "Half-Life Model Viewer v1.25";
 static char recentFiles[8][256];
 
@@ -60,14 +62,13 @@ MDLViewer::initRecentFiles ()
 void
 MDLViewer::loadRecentFiles ()
 {
-	char path[256];
-	strcpy (path, mx::getApplicationPath ());
-	strcat (path, "/hlmv.rf");
-	FILE *file = fopen (path, "rb");
-	if (file)
+	int i;
+	char buf[32];
+
+	for (i = 0; i < 8; i++)
 	{
-		fread (recentFiles, sizeof recentFiles, 1, file);
-		fclose (file);
+		sprintf (buf, "RecentFile%i", i);
+		mx_get_usersettings_string (buf, recentFiles[i]);
 	}
 }
 
@@ -76,16 +77,16 @@ MDLViewer::loadRecentFiles ()
 void
 MDLViewer::saveRecentFiles ()
 {
-	char path[256];
+	int i;
+	char buf[32];
 
-	strcpy (path, mx::getApplicationPath ());
-	strcat (path, "/hlmv.rf");
-
-	FILE *file = fopen (path, "wb");
-	if (file)
+	if (mx_create_usersettings ())
 	{
-		fwrite (recentFiles, sizeof recentFiles, 1, file);
-		fclose (file);
+		for (i = 0; i < 8; i++)
+		{
+			sprintf (buf, "RecentFile%i", i);
+			mx_set_usersettings_string (buf, recentFiles[i]);
+		}
 	}
 }
 
@@ -129,6 +130,8 @@ swap3dfxgl (bool b)
 MDLViewer::MDLViewer ()
 : mxWindow (0, 0, 0, 0, 0, g_appTitle, mxWindow::Normal)
 {
+	mx_init_usersettings (g_org, g_appTitle);
+
 	// create menu stuff
 	mb = new mxMenuBar (this);
 	mxMenu *menuFile = new mxMenu ();
@@ -225,14 +228,10 @@ MDLViewer::MDLViewer ()
 MDLViewer::~MDLViewer ()
 {
 	saveRecentFiles ();
-	//SaveViewerSettings ("hlmv.cfg");
 
 	swap3dfxgl (false);
+	remove ("midump.txt");
 
-#ifdef WIN32
-	//DeleteFile ("hlmv.cfg");
-	DeleteFile ("midump.txt");
-#endif
 }
 
 
@@ -480,6 +479,10 @@ MDLViewer::handleEvent (mxEvent *event)
 			d_cpl->dumpModelInfo ();
 			break;
 
+		case IDC_OPTIONS_SAVE:
+			SaveViewerSettings ();
+			break;
+
 		case IDC_HELP_GOTOHOMEPAGE:
 			mx_shellexec (this, "http://www.swissquake.ch/chumbalum-soft/index.html");
 			break;
@@ -601,7 +604,7 @@ main (int argc, char *argv[])
 		mxGlWindow::setFormat (mxGlWindow::FormatDouble, 32, 24);
 		mx::init (argc, argv);
 
-		if (!LoadViewerSettings ("hlmv.cfg"))
+		if (!LoadViewerSettings ())
 		{
 			mxMessageBox (0, "Error loading configuration.", g_appTitle, MX_MB_OK | MX_MB_ERROR);
 			return 0;
@@ -675,8 +678,6 @@ main (int argc, char *argv[])
 	g_MDLViewer->setMenuBar (g_MDLViewer->getMenuBar ());
 	g_MDLViewer->setBounds (20, 20, 640, 540);
 	g_MDLViewer->setVisible (true);
-
-	//LoadViewerSettings ("hlmv.cfg");
 
 	if (strstr (cmdline, ".mdl"))
 	{

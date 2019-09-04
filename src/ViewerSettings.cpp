@@ -19,8 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
+#include <mx/mxSettings.h>
 
 ViewerSettings g_viewerSettings;
 
@@ -60,15 +59,15 @@ InitViewerSettings (void)
 
 
 int
-LoadViewerSettings (const char *filename)
+LoadViewerSettings ()
 {
-	FILE *file = fopen (filename, "rb");
+	InitViewerSettings ();
 
-	if (!file)
-		return 0;
-
-	fread (&g_viewerSettings, sizeof (ViewerSettings), 1, file);
-	fclose (file);
+	mx_get_usersettings_vec4d ("Background Color", g_viewerSettings.bgColor);
+	mx_get_usersettings_vec4d ("Light Color", g_viewerSettings.lColor);
+	mx_get_usersettings_vec4d ("Ground Color", g_viewerSettings.gColor);
+	mx_get_usersettings_vec4d ("Guides Color", g_viewerSettings.guColor);
+	mx_get_usersettings_int ("Show Ground", (int *)&g_viewerSettings.showGround);
 
 	return 1;
 }
@@ -76,15 +75,18 @@ LoadViewerSettings (const char *filename)
 
 
 int
-SaveViewerSettings (const char *filename)
+SaveViewerSettings ()
 {
-	FILE *file = fopen (filename, "wb");
+	if (mx_create_usersettings ())
+	{
+		mx_set_usersettings_vec4d ("Background Color", g_viewerSettings.bgColor);
+		mx_set_usersettings_vec4d ("Light Color", g_viewerSettings.lColor);
+		mx_set_usersettings_vec4d ("Ground Color", g_viewerSettings.gColor);
+		mx_set_usersettings_vec4d ("Guides Color", g_viewerSettings.guColor);
+		mx_set_usersettings_int ("Show Ground", (int)g_viewerSettings.showGround);
 
-	if (!file)
-		return 0;
+		return 1;
+	}
 
-	fwrite (&g_viewerSettings, sizeof (ViewerSettings), 1, file);
-	fclose (file);
-
-	return 1;
+	return 0;
 }
