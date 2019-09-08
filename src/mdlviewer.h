@@ -69,6 +69,7 @@ class mxMenuBar;
 class GlWindow;
 class ControlPanel;
 class PAKViewer;
+class MDLTools;
 
 
 
@@ -78,6 +79,7 @@ class MDLViewer : public mxWindow
 	GlWindow *d_GlWindow;
 	ControlPanel *d_cpl;
 	PAKViewer *d_PAKViewer;
+	MDLTools *d_MDLTools;
 
 	void loadRecentFiles ();
 	void saveRecentFiles ();
@@ -96,6 +98,7 @@ public:
 	mxMenuBar *getMenuBar () const { return mb; }
 	GlWindow *getGlWindow () const { return d_GlWindow; }
 	PAKViewer *getPAKViewer () const { return d_PAKViewer; }
+	MDLTools *getMDLTools () const { return d_MDLTools; }
 };
 
 

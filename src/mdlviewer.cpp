@@ -24,6 +24,7 @@
 #include <mx/mxShellExec.h>
 #include <mx/mxSettings.h>
 #include "mdlviewer.h"
+#include "mdltools.h"
 #include "GlWindow.h"
 #include "ControlPanel.h"
 #include "StudioModel.h"
@@ -216,6 +217,8 @@ MDLViewer::MDLViewer ()
 	// finally create the pakviewer window
 	d_PAKViewer = new PAKViewer (this);
 
+	d_MDLTools = new MDLTools (this);
+
 	loadRecentFiles ();
 	initRecentFiles ();
 
@@ -231,7 +234,6 @@ MDLViewer::~MDLViewer ()
 
 	swap3dfxgl (false);
 	remove ("midump.txt");
-
 }
 
 
@@ -483,6 +485,27 @@ MDLViewer::handleEvent (mxEvent *event)
 			SaveViewerSettings ();
 			break;
 
+		case IDC_TOOLS_CONFIGURE:
+			d_MDLTools->setVisible (true);
+			break;
+
+		case IDC_TOOLS_MODELCOMPILE:
+			// TODO: Test StudioMDL later.
+			break;
+
+		case IDC_TOOLS_MODELDECOMPILE:
+			// TODO: Test MDLDec later.
+			break;
+
+		case IDC_TOOLS_QCFILEEDIT:
+		{
+			const char *path = mxGetOpenFileName (this, "", "QC Compile Scripts (*.qc)");
+
+			if (path)
+				mx_shellexec (this, path);
+		}
+		break;
+
 		case IDC_HELP_GOTOHOMEPAGE:
 			mx_shellexec (this, "http://www.swissquake.ch/chumbalum-soft/index.html");
 			break;
@@ -684,9 +707,12 @@ main (int argc, char *argv[])
 		g_ControlPanel->loadModel (cmdline);
 	}
 
+	g_MDLViewer->getMDLTools ()->init ();
+
 	int ret = mx::run ();
 
 	mx::cleanup ();
 
 	return ret;
 }
+
