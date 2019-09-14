@@ -17,8 +17,7 @@
 //
 #ifndef INCLUDED_VIEWERSETTINGS
 #define INCLUDED_VIEWERSETTINGS
-
-
+#include <mx/mxSettings.h>
 
 enum // render modes
 {
@@ -64,6 +63,7 @@ typedef struct
 	bool mirror;
 	bool useStencil;	// if 3dfx fullscreen set false
 	bool showAllMeshes;
+	bool playSound;
 
 	// animation
 	int sequence;
@@ -95,6 +95,9 @@ typedef struct
 	char modelFile[256];
 	char backgroundTexFile[256];
 	char groundTexFile[256];
+
+	char soundFolder[MAX_USERSETTINGS_ENTRY_SIZE];
+	char soundFile[256];
 } ViewerSettings;
 
 

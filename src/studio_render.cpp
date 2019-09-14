@@ -345,6 +345,8 @@ void StudioModel::AdvanceFrame( float dt )
 		// wrap
 		m_frame -= (int)(m_frame / (pseqdesc->numframes - 1)) * (pseqdesc->numframes - 1);
 	}
+
+	g_ControlPanel->OnPlaySound ((int)m_frame);
 }
 
 

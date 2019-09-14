@@ -139,6 +139,8 @@ class ControlPanel : public mxWindow
 	GlWindow *d_GlWindow;
 	TextureWindow *d_textureWindow;
 
+	mstudioevent_t *activeEvent;
+
 public:
 	// CREATORS
 	ControlPanel (mxWindow *parent);
@@ -175,6 +177,9 @@ public:
 	void setMesh (int index);
 	void setEvent (int index);
 	void setEventInfo (int index);
+	void setActiveEvent (mstudioevent_t *_activeEvent);
+
+	void OnPlaySound (int frame);
 
 	void initTextures ();
 

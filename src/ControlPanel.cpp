@@ -15,16 +15,19 @@
 // email:          mete@swissquake.ch
 // web:            http://www.swissquake.ch/chumbalum-soft/
 //
-#include "ControlPanel.h"
 #include "ViewerSettings.h"
 #include "StudioModel.h"
 #include "GlWindow.h"
+#include "ControlPanel.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <mx/mx.h>
 #include <mx/mxBmp.h>
 #include <mx/mxShellExec.h>
+#include <mx/mxSound.h>
+#include "eventlist.h"
+#include "scriptevent.h"
 
 extern const char *g_appTitle;
 
@@ -468,6 +471,12 @@ ControlPanel::handleEvent (mxEvent *event)
 			sprintf (str, "%d", g_nCurrFrame);
 			leFrame->setLabel (str);
 			leWpFrame->setLabel (str);
+		}
+		break;
+
+		case IDC_PLAYSOUND:
+		{
+			g_viewerSettings.playSound = ((mxCheckBox *) event->widget)->isChecked ();
 		}
 		break;
 
@@ -1053,6 +1062,11 @@ ControlPanel::setEventInfo (int index)
 	{
 		mstudioevent_t *pevents = (mstudioevent_t *) ((byte *)hdr + pseqdescs->eventindex) + index;
 
+		setActiveEvent (pevents);
+		if (g_viewerSettings.soundFolder[0] != '\0'
+		    && pevents->options[0] != '\0')
+			sprintf (g_viewerSettings.soundFile, "%s/%s", g_viewerSettings.soundFolder, pevents->options);
+
 		sprintf (str,
 			"Frame: %d\n"
 			"Event: %d\n"
@@ -1066,9 +1080,36 @@ ControlPanel::setEventInfo (int index)
 	}
 	else
 	{
+		setActiveEvent (0);
 		str[0] = '\0';
+		g_viewerSettings.soundFile[0] = '\0';
 	}
 	lEventInfo->setLabel (str);
+}
+
+
+
+void
+ControlPanel::setActiveEvent (mstudioevent_t *_activeEvent)
+{
+	activeEvent = _activeEvent;
+}
+
+
+
+void
+ControlPanel::OnPlaySound (int frame)
+{
+	if (g_viewerSettings.playSound
+	    && activeEvent
+	    && frame <= 512
+	    && (activeEvent->event == SCRIPT_EVENT_SOUND
+	    || activeEvent->event == SCRIPT_EVENT_SOUND_VOICE
+	    || activeEvent->event == AE_CL_PLAYSOUND))
+	{
+		mx_stopsnd ();
+		mx_playsnd (g_viewerSettings.soundFile);
+	}
 }
 
 

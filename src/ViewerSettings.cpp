@@ -68,6 +68,7 @@ LoadViewerSettings ()
 	mx_get_usersettings_vec4d ("Ground Color", g_viewerSettings.gColor);
 	mx_get_usersettings_vec4d ("Guides Color", g_viewerSettings.guColor);
 	mx_get_usersettings_int ("Show Ground", (int *)&g_viewerSettings.showGround);
+	mx_get_usersettings_string ("Sound Folder", g_viewerSettings.soundFolder);
 
 	return 1;
 }

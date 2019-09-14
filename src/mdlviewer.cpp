@@ -26,11 +26,9 @@
 #include "mdlviewer.h"
 #include "mdltools.h"
 #include "GlWindow.h"
-#include "ControlPanel.h"
 #include "StudioModel.h"
+#include "ControlPanel.h"
 #include "pakviewer.h"
-
-
 
 
 
@@ -473,6 +471,17 @@ MDLViewer::handleEvent (mxEvent *event)
 				if (!strstr (ptr, ".tga"))
 					strcat (ptr, ".tga");
 				d_GlWindow->dumpViewport (ptr);
+			}
+		}
+		break;
+
+		case IDC_OPTIONS_SOUNDFOLDER:
+		{
+			const char *ptr = mxGetFolderPath (this, g_viewerSettings.soundFolder);
+			if (ptr)
+			{
+				snprintf (g_viewerSettings.soundFolder, MAX_USERSETTINGS_ENTRY_SIZE, "%s", ptr);
+				mx_set_usersettings_string ("Sound Folder", g_viewerSettings.soundFolder);
 			}
 		}
 		break;
